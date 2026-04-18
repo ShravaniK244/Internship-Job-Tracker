@@ -23,6 +23,7 @@ export default function Login() {
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -95,15 +96,25 @@ export default function Login() {
 
           <div style={styles.field}>
             <label style={styles.label}>Password</label>
-            <input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              style={{ ...styles.input, ...(errors.password ? styles.inputError : {}) }}
-              autoComplete="current-password"
-            />
+            <div style={styles.passwordWrapper}>
+              <input
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                style={{ ...styles.input, ...(errors.password ? styles.inputError : {}) }}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.eyeBtn}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             {errors.password && <span style={styles.fieldError}>{errors.password}</span>}
           </div>
 
@@ -187,9 +198,27 @@ const styles = {
     fontSize: '13px', fontWeight: 500,
     color: 'var(--text-secondary)', letterSpacing: '0.02em',
   },
+  passwordWrapper: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  eyeBtn: {
+    position: 'absolute',
+    right: '12px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '18px',
+    padding: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'var(--transition)',
+  },
   input: {
     background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)', padding: '11px 14px',
+    borderRadius: 'var(--radius)', padding: '11px 44px 11px 14px',
     color: 'var(--text-primary)', fontSize: '14px',
     transition: 'var(--transition)',
     width: '100%',

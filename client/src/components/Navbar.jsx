@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
   const [confirming, setConfirming] = useState(false)
 
   const handleLogout = () => {
@@ -33,29 +33,31 @@ export default function Navbar() {
           <span style={styles.brandTag}>Job Tracker</span>
         </div>
 
-        {/* Right side */}
-        <div style={styles.right}>
-          {/* User avatar + name */}
-          <div style={styles.userInfo}>
-            <div style={styles.avatar}>{initials}</div>
-            <div style={styles.userMeta}>
-              <span style={styles.userName}>{user?.name || 'User'}</span>
-              <span style={styles.userEmail}>{user?.email || ''}</span>
+        {/* Right side - only show user info and logout when authenticated */}
+        {isAuthenticated && (
+          <div style={styles.right}>
+            {/* User avatar + name */}
+            <div style={styles.userInfo}>
+              <div style={styles.avatar}>{initials}</div>
+              <div style={styles.userMeta}>
+                <span style={styles.userName}>{user?.name || 'User'}</span>
+                <span style={styles.userEmail}>{user?.email || ''}</span>
+              </div>
             </div>
-          </div>
 
-          {/* Logout */}
-          <button
-            onClick={handleLogout}
-            style={{
-              ...styles.logoutBtn,
-              ...(confirming ? styles.logoutConfirm : {}),
-            }}
-            title={confirming ? 'Click again to confirm logout' : 'Logout'}
-          >
-            {confirming ? '⚠ Confirm?' : 'Logout'}
-          </button>
-        </div>
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              style={{
+                ...styles.logoutBtn,
+                ...(confirming ? styles.logoutConfirm : {}),
+              }}
+              title={confirming ? 'Click again to confirm logout' : 'Logout'}
+            >
+              {confirming ? '⚠ Confirm?' : 'Logout'}
+            </button>
+          </div>
+        )}
       </div>
     </header>
   )

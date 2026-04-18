@@ -2,7 +2,6 @@
 // Main dashboard: displays all job cards, handles filtering, add/edit/delete
 
 import React, { useState, useEffect, useCallback } from 'react'
-import Navbar from '../components/Navbar'
 import JobCard from '../components/JobCard'
 import JobForm from '../components/JobForm'
 import { jobsAPI } from '../services/api'
@@ -75,8 +74,14 @@ export default function Dashboard() {
 
   // ── Add job ────────────────────────────────────────────────────────────────
   const handleAdd = async (formData) => {
-    const { data } = await jobsAPI.create(formData)
-    setJobs(prev => [data.job || data, ...prev])
+    try {
+      const { data } = await jobsAPI.create(formData)
+      const created = data.job || data
+      setJobs(prev => [created, ...prev.filter(j => (j._id || j.id) !== (created._id || created.id))])
+      closeForm()
+    } catch (err) {
+      console.error('Failed to add job:', err)
+    }
   }
 
   // ── Edit job ───────────────────────────────────────────────────────────────
@@ -86,11 +91,16 @@ export default function Dashboard() {
   }
 
   const handleUpdate = async (formData) => {
-    const jobId = editingJob._id || editingJob.id
-    const { data } = await jobsAPI.update(jobId, formData)
-    const updated = data.job || data
-    setJobs(prev => prev.map(j => (j._id || j.id) === jobId ? updated : j))
-    setEditingJob(null)
+    try {
+      const jobId = editingJob._id || editingJob.id
+      const { data } = await jobsAPI.update(jobId, formData)
+      const updated = data.job || data
+      setJobs(prev => prev.map(j => (j._id || j.id) === jobId ? updated : j))
+      setEditingJob(null)
+      closeForm()
+    } catch (err) {
+      console.error('Failed to update job:', err)
+    }
   }
 
   // ── Delete job ─────────────────────────────────────────────────────────────
@@ -107,8 +117,6 @@ export default function Dashboard() {
 
   return (
     <div style={styles.page}>
-      <Navbar />
-
       <main style={styles.main}>
         {/* ── Page header ──────────────────────────────────────────────────── */}
         <div style={styles.pageHeader} className="animate-fade">

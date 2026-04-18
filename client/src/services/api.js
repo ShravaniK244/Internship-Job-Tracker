@@ -9,7 +9,7 @@ export const jobsAPI = {
   getAll: async () => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500))
-    return { data: mockJobs }
+    return { data: [...mockJobs] }
   },
 
   // Create a new job
@@ -22,7 +22,7 @@ export const jobsAPI = {
       updatedAt: new Date().toISOString()
     }
     mockJobs.unshift(newJob)
-    return { data: { job: newJob } }
+    return { data: { job: { ...newJob } } }
   },
 
   // Update a job
