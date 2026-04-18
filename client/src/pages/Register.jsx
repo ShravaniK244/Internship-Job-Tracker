@@ -54,6 +54,8 @@ export default function Register() {
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -131,12 +133,22 @@ export default function Register() {
           {/* Password */}
           <div style={styles.field}>
             <label style={styles.label}>Password</label>
-            <input
-              name="password" type="password" value={form.password} onChange={handleChange}
-              placeholder="Min. 6 characters"
-              style={{ ...styles.input, ...(errors.password ? styles.inputError : {}) }}
-              autoComplete="new-password"
-            />
+            <div style={styles.passwordWrapper}>
+              <input
+                name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange}
+                placeholder="Min. 6 characters"
+                style={{ ...styles.input, ...(errors.password ? styles.inputError : {}) }}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.eyeBtn}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             <PasswordStrength password={form.password} />
             {errors.password && <span style={styles.fieldError}>{errors.password}</span>}
           </div>
@@ -144,12 +156,22 @@ export default function Register() {
           {/* Confirm Password */}
           <div style={styles.field}>
             <label style={styles.label}>Confirm password</label>
-            <input
-              name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange}
-              placeholder="Repeat your password"
-              style={{ ...styles.input, ...(errors.confirmPassword ? styles.inputError : {}) }}
-              autoComplete="new-password"
-            />
+            <div style={styles.passwordWrapper}>
+              <input
+                name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={handleChange}
+                placeholder="Repeat your password"
+                style={{ ...styles.input, ...(errors.confirmPassword ? styles.inputError : {}) }}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={styles.eyeBtn}
+                title={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             {errors.confirmPassword && <span style={styles.fieldError}>{errors.confirmPassword}</span>}
           </div>
 
@@ -218,11 +240,29 @@ const styles = {
   label: { fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)' },
   input: {
     background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)', padding: '11px 14px',
+    borderRadius: 'var(--radius)', padding: '11px 44px 11px 14px',
     color: 'var(--text-primary)', fontSize: '14px',
     transition: 'var(--transition)', width: '100%',
   },
   inputError: { borderColor: '#ef4444' },
+  passwordWrapper: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  eyeBtn: {
+    position: 'absolute',
+    right: '12px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '18px',
+    padding: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'var(--transition)',
+  },
   fieldError: { color: '#f87171', fontSize: '12px' },
   submitBtn: {
     background: 'var(--accent)', color: '#0a0f1e',
